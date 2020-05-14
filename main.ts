@@ -6,6 +6,10 @@ namespace SpriteKind {
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Egg, function (sprite, otherSprite) {
     Egg2.destroy(effects.disintegrate, 500)
     info.changeLifeBy(-1)
+    music.playTone(247, music.beat(BeatFraction.Half))
+    music.playTone(233, music.beat(BeatFraction.Half))
+    music.playTone(220, music.beat(BeatFraction.Half))
+    music.playTone(208, music.beat(BeatFraction.Whole))
 })
 sprites.onOverlap(SpriteKind.Bullet, SpriteKind.Projectile, function (sprite, otherSprite) {
     Bird.destroy(effects.spray, 500)
@@ -14,6 +18,7 @@ sprites.onOverlap(SpriteKind.Bullet, SpriteKind.Projectile, function (sprite, ot
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
     Mushroom.destroy(effects.spray, 500)
     info.changeScoreBy(1)
+    music.baDing.play()
 })
 info.onCountdownEnd(function () {
     Shark_gun = sprites.createProjectileFromSprite(img`
@@ -35,6 +40,10 @@ info.onCountdownEnd(function () {
 . . . . . . . . . . . . . . . . . . . f f f f f . . . . . . . . . f f f 
 `, Person, 0, -200)
     Shark_gun.setKind(SpriteKind.Bullet)
+})
+info.onLifeZero(function () {
+    music.stopAllSounds()
+    game.over(false)
 })
 sprites.onOverlap(SpriteKind.Bullet, SpriteKind.Enemy, function (sprite, otherSprite) {
     Bird_2.destroy(effects.spray, 500)
@@ -267,6 +276,9 @@ game.onUpdateInterval(5000, function () {
 . . . . . . . . . . . . . . . . . . . . 
 `, SpriteKind.Food)
     Mushroom.setPosition(Math.randomRange(0, 160), 105)
+})
+forever(function () {
+    music.playMelody("G B A G C5 B A B ", 105)
 })
 game.onUpdateInterval(3000, function () {
     Bird = sprites.createProjectileFromSide(img`
