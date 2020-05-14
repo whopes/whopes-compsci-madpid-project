@@ -1,39 +1,51 @@
 namespace SpriteKind {
     export const Scene = SpriteKind.create()
+    export const Egg = SpriteKind.create()
+    export const Bullet = SpriteKind.create()
 }
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
-    Mushroom.destroy()
-    info.changeScoreBy(1)
-})
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
-    Egg.destroy()
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Egg, function (sprite, otherSprite) {
+    Egg2.destroy(effects.disintegrate, 500)
     info.changeLifeBy(-1)
 })
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    projectile = sprites.createProjectileFromSprite(img`
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-. . . . . . . . . . . . . . . . 
-`, Person, 50, 100)
+sprites.onOverlap(SpriteKind.Bullet, SpriteKind.Projectile, function (sprite, otherSprite) {
+    Bird.destroy(effects.spray, 500)
+    info.changeScoreBy(5)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function (sprite, otherSprite) {
+    Mushroom.destroy(effects.spray, 500)
+    info.changeScoreBy(1)
+})
+info.onCountdownEnd(function () {
+    Shark_gun = sprites.createProjectileFromSprite(img`
+. . . . . . . . . . . . . . . . . . . . c c f f f . . . . . . . . . . . 
+. . . . . . . . . . f f f f f f f f f c b b b b f . . . . . . . . . . . 
+. . . . . . . . . f b b b b b b b b b f f f b f . . . . . . . . . . . . 
+. . . . . . . . . f b b 1 1 1 b f f b b b b f f . . . . . . . . . . . . 
+. . . . . . . . . f b 1 1 1 1 1 f f b b b b b c f f . . . . . . . . . . 
+. . . . . . . . . f 1 c c c c 1 1 b b c b c b c c c f . . . . . . . . . 
+. . . . . . . . . . f c 1 c 1 c 1 b b b c b c b c c c f . . . c c c c c 
+. . . . . . . . . . . . c 3 3 3 1 b b b c b c b c c c c f c c d d b b c 
+. . . . . . . . . . . c 3 3 3 c 1 b b b b b b b c c c c c b d d b c c . 
+. . . . . . . . . . . c 3 3 1 c 1 1 b b b b b c c c c c c c b b c c . . 
+. . . . . . . . . . c c 1 3 c 1 1 1 b b b b c c c c c c f f b c c f . . 
+. . . . . . . . . . c 1 1 1 1 1 1 c b b b c c c c c b b c . f c c f . . 
+. . . . . . . . . 3 3 3 c 1 1 1 1 c b b b f d d d d d c . . f b b c f . 
+. . . . . . . . . . . . . c c c f f b d b b f d d d c . . . . f b b f . 
+. . . . . . . . . . . . . . . . . . f b d b b f c c . . . . . . f b b f 
+. . . . . . . . . . . . . . . . . . . f f f f f . . . . . . . . . f f f 
+`, Person, 0, -200)
+    Shark_gun.setKind(SpriteKind.Bullet)
+})
+sprites.onOverlap(SpriteKind.Bullet, SpriteKind.Enemy, function (sprite, otherSprite) {
+    Bird_2.destroy(effects.spray, 500)
+    info.changeScoreBy(5)
+    Shark_gun.destroy(effects.fire, 500)
 })
 let Bird_2: Sprite = null
-let Bird: Sprite = null
-let projectile: Sprite = null
-let Egg: Sprite = null
+let Shark_gun: Sprite = null
 let Mushroom: Sprite = null
+let Bird: Sprite = null
+let Egg2: Sprite = null
 let Person: Sprite = null
 scene.setBackgroundImage(img`
 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 9 
@@ -180,7 +192,7 @@ Person.setFlag(SpriteFlag.StayInScreen, true)
 controller.moveSprite(Person, 100, 0)
 info.setLife(3)
 game.onUpdateInterval(1250, function () {
-    Egg = sprites.createProjectileFromSprite(img`
+    Egg2 = sprites.createProjectileFromSprite(img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
@@ -198,6 +210,7 @@ game.onUpdateInterval(1250, function () {
 . . . . 1 1 1 1 1 1 1 1 . . . . 
 . . . . . . 1 1 1 1 1 . . . . . 
 `, Bird, 0, 100)
+    Egg2.setKind(SpriteKind.Egg)
 })
 game.onUpdateInterval(2000, function () {
     Bird_2 = sprites.createProjectileFromSide(img`
@@ -223,6 +236,12 @@ game.onUpdateInterval(2000, function () {
 . . . . . . . . . . 2 2 2 2 2 . . . . . 
 `, -50, 0)
     Bird_2.setPosition(160, 30)
+    Bird_2.setKind(SpriteKind.Enemy)
+})
+game.onUpdate(function () {
+    if (controller.A.isPressed()) {
+        info.startCountdown(4)
+    }
 })
 game.onUpdateInterval(5000, function () {
     Mushroom = sprites.create(img`
@@ -271,7 +290,7 @@ game.onUpdateInterval(3000, function () {
     Bird.setPosition(0, 20)
 })
 game.onUpdateInterval(3000, function () {
-    Egg = sprites.createProjectileFromSprite(img`
+    Egg2 = sprites.createProjectileFromSprite(img`
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
 . . . . . . . . . . . . . . . . 
@@ -289,4 +308,11 @@ game.onUpdateInterval(3000, function () {
 . . . . 1 1 1 1 1 1 1 1 . . . . 
 . . . . . . 1 1 1 1 1 . . . . . 
 `, Bird_2, 0, 100)
+    Egg2.setKind(SpriteKind.Egg)
+    pause(100)
+})
+game.onUpdateInterval(1000, function () {
+    if (Person.vx < 0) {
+        Person.image.flipX()
+    }
 })
